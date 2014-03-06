@@ -1,0 +1,12 @@
+{
+	"name": "Authentication_Socket",
+	"version": "0.0.0",
+	"description": "NodeJS_Auth_Socket",
+	"dependencies": {
+		"socket.io": "latest",
+		"express": "latest",
+		"mathjs": "latest",
+		"mysql": "latest"
+	},
+	"author": "Jon West ddproxy@gmail.com, Grant Gandy clsscmstng@gmail.com"
+}

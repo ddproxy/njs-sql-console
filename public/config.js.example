@@ -1,0 +1,9 @@
+// Configure with this file
+// Port = 3700
+//
+// hostname = "";
+//	hostname should be your ip address or domain name of the server hosting the socket
+//
+
+var port = 3700;
+var hostname = "localhost";
