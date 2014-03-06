@@ -1,4 +1,4 @@
-node-MySql-Interface
+NodeJS MySql Console Interface
 ====================
 
 Interact with your database with raw queries.
