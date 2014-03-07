@@ -1,8 +1,9 @@
 {
-	"port": "3702",
-	"hostname": "localhost",
-	"host": "hostname.net",
-	"user": "database user",
-	"password": "database password",
-	"database": "database schema"
+"port": "3702",                     // Default port 3702
+"hostname": "localhost",            // Loopback
+"host": "database.hostname.com",    // Database location (aws endpoints should work)
+"user": "user",                     // Database user
+"password": "password",             // Database password
+"database": "schema"                // Database schema
 }
+

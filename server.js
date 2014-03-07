@@ -70,13 +70,38 @@ var config = require( "./private/config.json" );
 * MySQL connection
 *
 *******************/
+// Insert custom mysql connection information here
+var dbConfig = {
+    host: config.host,
+    user: config.user,
+    password: config.password,
+    database: config.database
+}
 
-var db = mysql.createConnection({
-	host: config.host,
-	user: config.user,
-	password: config.password,
-	database: config.database
-});
+
+var db;
+function handleDisconnect() {
+    db = mysql.createConnection(dbConfig);
+
+    // Custom error handler
+    db.connect(function(err) {
+        if(err) {
+            console.log("Error when connecting to DB:", err);
+            setTimeout(handleDisconnect, 2000);
+        }
+    });
+    db.on( "error", function( err ) {
+        console.log("Mysql Error:: " + err.code);
+        if(err.code === "PROTOCOL_CONNECTION_LOST") {
+            handleDisconnect();
+        } else {
+            throw err;
+        }
+    });
+
+}
+
+handleDisconnect();
 
 /*******************
 * 
@@ -112,8 +137,8 @@ console.log( "SocketIO is listening to port::" + config.port );
 *******************/
 var badQueries = new Array(),
     ignoreLimit = new Array();
-    badQueries.push('insert','delete','update','replace','drop','alter','create','grant');
-    ignoreLimit.push('explain','show');
+    badQueries.push('delete','update','replace','drop','alter','create','grant');
+    ignoreLimit.push('explain','show','insert','delete','update','replace','drop','alter','create','grant');
 console.log( "Now Ready" );
 
 /*************************
