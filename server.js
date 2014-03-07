@@ -133,8 +133,10 @@ console.log( "SocketIO is listening to port::" + config.port );
 /******************
 *
 * Cast usable variables
+*   TODO: Drop restrictions into config or param JSON
 *
 *******************/
+
 var badQueries = new Array(),
     ignoreLimit = new Array();
     badQueries.push('delete','update','replace','drop','alter','create','grant');
@@ -144,12 +146,14 @@ console.log( "Now Ready" );
 /*************************
 *
 * Listening to sockets
+*   TODO: Drop sockets into sharable sessions
 *
 **************************/
 
 io.sockets.on( 'connection', function( socket ) {
+    // TODO: Authenticate users
 	socket.on( 'register', function( data ) {
-	
+	// TODO: Present optional sessions for sockets to join
 	});
 
 	/***************************
@@ -157,9 +161,6 @@ io.sockets.on( 'connection', function( socket ) {
 	* Administrator functions
 	*
 	****************************/
-    function processRow( row ) {
-        socket.emit( 'row', row );
-    }
     socket.on( 'query', function( data ) {
         data = data.replace(/;/g,'');
         var queryC = data.toLowerCase();

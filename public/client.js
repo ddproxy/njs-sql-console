@@ -9,27 +9,33 @@ window.onload = function() {
     var html = '';
     var columns = Array();
 
+    // REVIEW: Probably should just depreciate
 	function renderStat(element, index, array) {
 	  html += "<br />[" + index + "] is " + element ;
 	}
 	
 	var socket = io.connect( 'http://' + hostname + ':' + port );
-
+    // TODO: Submit authentication details
+    // TODO: Catch register event
+    // TODO: Catch optional sessions
+    // REVIEW: Should probably move query() somewhere else
     function query( string ) {
         socket.emit("query", string);
     }
-    
+    // TODO: Catch session updates
     socket.on('reply', function( data ) {
+        // TODO: Distinguish between subscribed sessions
         if(dataObject != null)dataObject.fnDestroy();
         if(typeof columns !== 'undefined' ) columns = [];
         if(typeof aaData !== 'undefined' ) aaData = [];
         if(typeof aoColumns !== 'undefined' ) aoData = [];
         
-        
+        // FIXME: Use Jquery to create elements
         var AppendToHead = '<tr>';
-        var tmp = data[0]; 
+        var tmp = data[0];
         $.each(tmp, function( key, value) {
             AppendToHead += "<th>" + key +"</th>";
+            // TODO: Add to new array for autocomplete
             columns.push(key);
         });
         AppendToHead += '</tr>';
@@ -37,6 +43,7 @@ window.onload = function() {
         $.each(columns, function(i,v) {
             aoColumns.push({'sTitle': v});
         });
+        // FIXME: Should make this more elegant
         head.empty();
         head.append(AppendToHead);
         var aaData = Array();
@@ -47,6 +54,7 @@ window.onload = function() {
             });
             aaData.push(tmp);
         });
+        // FIXME: Should make this more elegant too
         body.empty();
         dataObject = table.dataTable( {
             "bProcess":true,
@@ -74,6 +82,9 @@ window.onload = function() {
             }
         });
     });
+    // TODO: Migrate the CodeMirror construction to here
+
+    // TODO: Look into combining these event listeners
     $("#query").on( 'click', function() {
         var string = $("#string").val();
         query(string);
