@@ -6,10 +6,10 @@ Reply's are returned to a auto-generated Datatable. (CDN)
 Queries are 'formatted' by CodeMirror (CDN)
 
 #####Dependencies
-_CDN_
-DataTables
-DataTables - Table Tools
-CodeMirror
+__CDN__
+ - DataTables
+ - DataTables - Table Tools
+ - CodeMirror
 
 #Installation
 
