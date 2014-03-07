@@ -1,7 +1,16 @@
 NodeJS MySql Console Interface
 ====================
 
-Interact with your database with raw queries.
+Interact with your database with single queries.
+Reply's are returned to a auto-generated Datatable. (CDN)
+Queries are 'formatted' by CodeMirror (CDN)
+
+#####Dependencies
+_CDN_
+DataTables
+DataTables - Table Tools
+CodeMirror
+
 #Installation
 
 - run sudo npm install to install node\_modules
