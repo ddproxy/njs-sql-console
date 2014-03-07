@@ -21,9 +21,11 @@ window.onload = function() {
     
     socket.on('reply', function( data ) {
         if(dataObject != null)dataObject.fnDestroy();
-        if(typeof columns !== 'undefined' && columns.length > 0) columns = [];
-        if(typeof aaData !== 'undefined' && aaData.length > 0) aaData = [];
-        if(typeof aoColumns !== 'undefined' && aoColumns.length > 0) aoData = [];
+        if(typeof columns !== 'undefined' ) columns = [];
+        if(typeof aaData !== 'undefined' ) aaData = [];
+        if(typeof aoColumns !== 'undefined' ) aoData = [];
+        
+        
         var AppendToHead = '<tr>';
         var tmp = data[0]; 
         $.each(tmp, function( key, value) {
@@ -50,13 +52,26 @@ window.onload = function() {
             "bProcess":true,
             "bDestroy":true,
             "aaData": aaData,
-            "sDom": '<"H"Cfr>t<"F"ip>',
+            "sDom": 'T<"H"Clfr>t<"F"ip>',
             "aoColumns": aoColumns,
             "sScrollX": "100%",
             "bLengthChange": true,
             "iDisplayLength": 25,
             "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-            "bJQueryUI": true 
+            "bJQueryUI": true,
+            "oTableTools": {
+                "aButtons": [
+                    "copy",
+                    {
+                            "sExtends": "csv",
+                            "sTitle": "export"
+                    },{
+                            "sExtends": "xls",
+                            "sTitle": "export"
+                    }
+            ],
+                "sSwfPath": "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf"
+            }
         });
     });
     $("#query").on( 'click', function() {

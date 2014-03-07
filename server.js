@@ -95,7 +95,7 @@ function handleDisconnect() {
         if(err.code === "PROTOCOL_CONNECTION_LOST") {
             handleDisconnect();
         } else {
-            throw err;
+            console.log("Error MySql: ", err);
         }
     });
 

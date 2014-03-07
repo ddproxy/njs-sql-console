@@ -8,6 +8,17 @@
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables TableTools -->
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/css/TableTools.css">
+    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/js/TableTools.min.js"></script>
+    
+    <!-- CodeMirror -->
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/codemirror.css">
+    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/codemirror.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/mode/sql/sql.js"></script>
+    
     <!-- Modify for port number and hostname -->
     <script type="text/javascript" src="./config.js"></script><style type="text/css"></style>
     <script type="text/javascript" src="./client.js"></script>
@@ -82,6 +93,11 @@
             margin: auto;
             display: block;
         }
+        .codemirror {
+            height: 50px;
+            width: 80%;
+            margin: auto;
+        }
     </style>
 </head>
 
@@ -94,6 +110,21 @@
     </div>
     <textarea id="string" ></textarea>
     <div id="query">Query</div>
-
+    <script>
+        var mime = 'text/x-mysql';
+        var editor = CodeMirror.fromTextArea(document.getElementById('string'), {
+            mode: mime,
+            indentWithTabs: true,
+            smartIndent: true,
+            matchBrackets: true,
+            extraKeys: {
+                "Enter": function ( i ) {
+                    $("#query").trigger( 'click' );
+                }
+            }
+        }).on( 'change',function( cm ) {
+            $("#string").val( cm.getValue() );
+        });
+    </script>
 </body>
 </html>
