@@ -1,6 +1,19 @@
 <html>
     <head>
-        <!-- TODO: Move CDN's to end of file and remove on ready listening in client -->
+        
+    </head>
+
+<body>
+    <div id='container'>
+        <table id='data'>
+            <thead id='dataHead'></thead>
+            <tbody id='dataBody'></tbody>
+        </table>
+    </div>
+    <textarea id="string" ></textarea>
+    <div id="query">Query</div>
+    
+    
     <!-- Jquery CDNs -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
@@ -22,8 +35,9 @@
     
     <!-- Modify for port number and hostname -->
     <script type="text/javascript" src="./config.js"></script><style type="text/css"></style>
-    <script type="text/javascript" src="./client.js"></script>
     <script type="text/javascript" src="./socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="./client.js"></script>
+    
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.4/themes/dot-luv/jquery-ui.css">
     
@@ -100,32 +114,6 @@
             margin: auto;
         }
     </style>
-</head>
 
-<body>
-    <div id='container'>
-        <table id='data'>
-            <thead id='dataHead'></thead>
-            <tbody id='dataBody'></tbody>
-        </table>
-    </div>
-    <textarea id="string" ></textarea>
-    <div id="query">Query</div>
-    <script>
-        var mime = 'text/x-mysql';
-        var editor = CodeMirror.fromTextArea(document.getElementById('string'), {
-            mode: mime,
-            indentWithTabs: true,
-            smartIndent: true,
-            matchBrackets: true,
-            extraKeys: {
-                "Enter": function ( i ) {
-                    $("#query").trigger( 'click' );
-                }
-            }
-        }).on( 'change',function( cm ) {
-            $("#string").val( cm.getValue() );
-        });
-    </script>
 </body>
 </html>

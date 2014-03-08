@@ -64,13 +64,14 @@ fs.exists( "private/config.json", function( exists ) {
 
 // Load configuration file
 var config = require( "./private/config.json" );
+var params = require( "./private/params.json" );
 
 /*******************
 * 
 * MySQL connection
 *
 *******************/
-// Insert custom mysql connection information here
+// /Insert custom mysql connection information here
 var dbConfig = {
     host: config.host,
     user: config.user,
@@ -137,10 +138,8 @@ console.log( "SocketIO is listening to port::" + config.port );
 *
 *******************/
 
-var badQueries = new Array(),
-    ignoreLimit = new Array();
-    badQueries.push('delete','update','replace','drop','alter','create','grant');
-    ignoreLimit.push('explain','show','insert','delete','update','replace','drop','alter','create','grant');
+var badQueries = params.bad,
+    ignoreLimit = params.noLimit;
 console.log( "Now Ready" );
 
 /*************************
@@ -153,6 +152,12 @@ console.log( "Now Ready" );
 io.sockets.on( 'connection', function( socket ) {
     // TODO: Authenticate users
 	socket.on( 'register', function( data ) {
+        if(data.password == config.password) {
+            socket.emit( 'rules', { bad: badQueries, noLimit: ignoreLimit });
+            socket.emit( 'sessions', { rooms: io.rooms });
+        } else {
+
+        }
 	// TODO: Present optional sessions for sockets to join
 	});
 

@@ -1,0 +1,24 @@
+{
+   "bad": [
+    "delete",
+    "update",
+    "replace",
+    "drop",
+    "alter",
+    "create",
+    "grant"
+        ],
+    "noLimit": [
+    "explain",
+    "show",
+    "insert",
+    "delete",
+    "update",
+    "replace",
+    "drop",
+    "alter",
+    "create",
+    "grant"
+        ],
+    "limit": 500
+}

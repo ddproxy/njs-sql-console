@@ -1,6 +1,3 @@
-
-window.onload = function() {
-	
     var container = document.getElementById("container");
     var table = $("#data");
     var dataObject;
@@ -8,11 +5,6 @@ window.onload = function() {
     var body = $("#dataBody");
     var html = '';
     var columns = Array();
-
-    // REVIEW: Probably should just depreciate
-	function renderStat(element, index, array) {
-	  html += "<br />[" + index + "] is " + element ;
-	}
 	
 	var socket = io.connect( 'http://' + hostname + ':' + port );
     // TODO: Submit authentication details
@@ -82,10 +74,31 @@ window.onload = function() {
             }
         });
     });
-    // TODO: Migrate the CodeMirror construction to here
+    /**********************
+     *
+     * CodeMirror construction
+     *
+     *********************/
+
+    var mime = 'text/x-mysql';
+    var editor = CodeMirror.fromTextArea(document.getElementById('string'), {
+        mode: mime,
+        indentWithTabs: true,
+        smartIndent: true,
+        matchBrackets: true,
+        extraKeys: {
+            "Enter": function ( i ) {
+                // Trigger #query click event
+                $("#query").trigger( 'click' );
+            }
+        }
+    }).on( 'change',function( cm ) {
+        // Update #string to formed query
+        $("#string").val( cm.getValue() );
+    });
 
     // TODO: Look into combining these event listeners
-    $("#query").on( 'click', function() {
+    $("#query").button().on( 'click', function() {
         var string = $("#string").val();
         query(string);
     });
@@ -95,4 +108,3 @@ window.onload = function() {
             $("#query").trigger( 'click' );
         }
     });
-}
