@@ -1,14 +1,11 @@
 /*******************************
 *
-* Auth.js
+* Server.js
 *
-*	Authenticate users information is correct and save to array uspaCache,
-*	 counts how many times each user loads a new page and the most recent
-*	 timestamp.
+*	Authenticate users and allow data transport between
+*	    server and client.js
 *
-*	Broadcast new information to admin.js admin.php to display activity
-*	 and most recent timestamp. On each page call, cast data as update
-*	 and append to table with new data.
+*	Pass MySql queries to database and return data.
 *
 ********************************/
 
@@ -151,15 +148,15 @@ console.log( "Now Ready" );
 
 io.sockets.on( 'connection', function( socket ) {
     // TODO: Authenticate users
-	socket.on( 'register', function( data ) {
-        if(data.password == config.password) {
+	//socket.on( 'register', function( data ) {
+    //    if(data.password == config.password) {
             socket.emit( 'rules', { bad: badQueries, noLimit: ignoreLimit });
             socket.emit( 'sessions', { rooms: io.rooms });
-        } else {
+    //    } else {
 
-        }
+    //    }
 	// TODO: Present optional sessions for sockets to join
-	});
+	//});
 
 	/***************************
 	*
