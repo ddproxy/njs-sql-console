@@ -7,59 +7,137 @@
  *
  *************************/
 
-var container = document.getElementById("container");
-var table = $("#data");
-var dataObject;
-var head = $("#dataHead");
-var body = $("#dataBody");
-var html = '';
-var columns = Array();
+var container = document.getElementById("container"),
+    table = $("#data"),
+    body = $("#dataBody"),
+    html = '',
+    dataObject,
+    auth,
+    columns = Array();
+
+/**********************
+ *
+ * Socket Connection
+ *
+ * ********************/
 
 var socket = io.connect( 'http://' + hostname + ':' + port );
-// TODO: Submit authentication details
 
-// TODO: Catch register event
+/**********************
+ *
+ * CodeMirror construction
+ *  Wrap CodeMirror and event listeners to function
+ *      so it can be activated after the UI is built.
+ *
+ *********************/
+function activateQuery() {
+    var mime = 'text/x-mysql';
+    var editor = CodeMirror.fromTextArea(document.getElementById('string'), {
+        mode: mime,
+        indentWithTabs: true,
+        smartIndent: true,
+        matchBrackets: true,
+        extraKeys: {
+            "Enter": function ( i ) {
+                // Trigger #query click event
+                $("#query").trigger( 'click' );
+            }
+        }
+    }).on( 'change',function( cm ) {
+        // Update #string to formed query
+        $("#string").val( cm.getValue() );
+    });
 
-// TODO: Catch optional sessions
+    /*********************
+     *
+     * Listeners
+     *
+     * *******************/
 
-// REVIEW: Should probably move query() somewhere else
+    // TODO: Look into combining these event listeners
+    $("#query").button().on( 'click', function() {
+        var string = $("#string").val();
+        query(string);
+    });
+    $(document).keypress( function( e ) {
+        if( e.which == 13 ) {
+            e.preventDefault();
+            $("#query").trigger( 'click' );
+        }
+    });
+} // end function activateQuery
+
+/**********************
+ *
+ * Functions
+ *
+ * ********************/
+
+// Query the database via the socket
 function query( string ) {
-    socket.emit("query", string);
+    socket.emit("query", {
+        auth: auth,
+        query: string
+        }
+    );
 }
 
-// TODO: Catch session updates
-socket.on( 'sessions', function( data ) {
-    // Interact
-    console.log( data );
-});
-socket.on( 'rules', function( data ) {
-    // Display rules
-    console.log( data );
-});
+// Authenticate with the socket
+function authenticate( user, pass ) {
+    // Socket
+    socket.emit( "register", {
+        user: user,
+        pass: pass
+        }
+    );
+}
 
-socket.on('reply', function( data ) {
+// Change socket room
+function room( room ) {
+    // Socket
+    socket.emit( "room", {
+        auth: auth,
+        room: room
+        }
+    );
+}
+/*********************
+ * UI Functions
+ * *******************/
+// UI Create Query Input
+function generateInput() {
+    // Use Jquery to create inputs
+    var input = $('<textarea/>').attr('id','string'),
+        button = $('<div/>').attr('id','query').append('Query');
+    $(container).after(input,button);
+    // Start query listeners
+    activateQuery();
+}
+// UI Render Table
+function renderTable( data ) {
     // TODO: Distinguish between subscribed sessions
     if(dataObject != null)dataObject.fnDestroy();
     if(typeof columns !== 'undefined' ) columns = [];
     if(typeof aaData !== 'undefined' ) aaData = [];
     if(typeof aoColumns !== 'undefined' ) aoData = [];
     
-    // FIXME: Use Jquery to create elements
-    var AppendToHead = '<tr>';
+    // Use Jquery to create elements
+    var head = [];
     var tmp = data[0];
+    var aoColumns = [];
+    // Generate the header row
     $.each(tmp, function( key, value) {
-        AppendToHead += "<th>" + key +"</th>";
-        // TODO: Add to new array for autocomplete
+        head.push($('th').append(key));
         columns.push(key);
     });
-    AppendToHead += '</tr>';
-    var aoColumns = new Array();
+    head = $('tr').append( head );
+    $('#dataHead tr').replaceWith(head);
+    // End generate header row
+    // Generate column data for DataTables
     $.each(columns, function(i,v) {
         aoColumns.push({'sTitle': v});
     });
-    // FIXME: Should make this more elegant
-    head.empty();
-    head.append(AppendToHead);
+    // Generate data for DataTables
     var aaData = Array();
     $.each(data, function(i,v) {
         var tmp = new Array();
@@ -68,8 +146,10 @@ socket.on('reply', function( data ) {
         });
         aaData.push(tmp);
     });
-    // FIXME: Should make this more elegant too
+    // End DataTables data generation
+    // Wipe table for new data
     body.empty();
+    // Initiate DataTable
     dataObject = table.dataTable( {
         "bProcess":true,
         "bDestroy":true,
@@ -95,38 +175,41 @@ socket.on('reply', function( data ) {
             "sSwfPath": "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf"
         }
     });
-});
+}
+
+// TODO: Submit authentication details
+
 /**********************
  *
- * CodeMirror construction
+ * Socket Listeners
  *
- *********************/
+ * ********************/
 
-var mime = 'text/x-mysql';
-var editor = CodeMirror.fromTextArea(document.getElementById('string'), {
-    mode: mime,
-    indentWithTabs: true,
-    smartIndent: true,
-    matchBrackets: true,
-    extraKeys: {
-        "Enter": function ( i ) {
-            // Trigger #query click event
-            $("#query").trigger( 'click' );
-        }
-    }
-}).on( 'change',function( cm ) {
-    // Update #string to formed query
-    $("#string").val( cm.getValue() );
-});
 
-// TODO: Look into combining these event listeners
-$("#query").button().on( 'click', function() {
-    var string = $("#string").val();
-    query(string);
-});
-$(document).keypress( function( e ) {
-    if( e.which == 13 ) {
-        e.preventDefault();
-        $("#query").trigger( 'click' );
+// TODO: Catch register event
+socket.on( 'register', function( data ) {
+    // If registration is successful
+    // save authentication information
+    // in auth variable
+    if( data.reply && data.key != null ) {
+        // Auth variable is global and stores the user
+        // and the key associated with that user
+        auth = { user: data.user, key: data.key };
     }
 });
+// TODO: Catch session updates
+socket.on( 'sessions', function( data ) {
+    // Interact
+    console.log( data );
+});
+// Catch rules
+socket.on( 'rules', function( data ) {
+    // Display rules
+    console.log( data );
+});
+// Catch query reply
+socket.on('reply', function( data ) {
+    renderTable( data );    
+});
+
+generateInput();

@@ -164,6 +164,8 @@ io.sockets.on( 'connection', function( socket ) {
 	*
 	****************************/
     socket.on( 'query', function( data ) {
+        var auth = data.auth;
+        data = data.query;
         data = data.replace(/;/g,'');
         var queryC = data.toLowerCase();
         var pass = true;
