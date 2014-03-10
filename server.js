@@ -136,7 +136,8 @@ console.log( "SocketIO is listening to port::" + config.port );
 *******************/
 
 var badQueries = params.bad,
-    ignoreLimit = params.noLimit;
+    ignoreLimit = params.noLimit,
+    userList = [];
 console.log( "Now Ready" );
 
 /*************************
@@ -148,19 +149,29 @@ console.log( "Now Ready" );
 
 io.sockets.on( 'connection', function( socket ) {
     // TODO: Authenticate users
-	//socket.on( 'register', function( data ) {
-    //    if(data.password == config.password) {
+    socket.on( 'register', function( data ) {
+        console.log( data );
+        if( data.pass == config.password) {
             socket.emit( 'rules', { bad: badQueries, noLimit: ignoreLimit });
             socket.emit( 'sessions', { rooms: io.rooms });
-    //    } else {
-
-    //    }
+            registerSocket( data.user );
+        } else {
+            socket.emit( 'register', { reply: false } );
+        }
 	// TODO: Present optional sessions for sockets to join
-	//});
+	});
+
+    // Function
+    function registerSocket( user ) {
+        var key = Math.random().toString(36).substring(7);
+        userList[user] = { key: key };
+        socket.emit( 'register', { reply: true, key: key } );
+    }
+
 
 	/***************************
 	*
-	* Administrator functions
+	* Logged in socket listeners
 	*
 	****************************/
     socket.on( 'query', function( data ) {

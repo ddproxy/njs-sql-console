@@ -105,6 +105,35 @@ function room( room ) {
  * UI Functions
  * *******************/
 // UI Create Query Input
+function showLogin() {
+    var login = $("<div />", { id: 'login', text: 'Login to Administration'}),
+        form = $("<form />", { action: '', method: 'POST' }),
+        frmusername = $("<input />", { id: 'username', name: 'username', placeholder: 'Username', type: 'text' }),
+        frmpassword = $("<input />", { id: 'password', name: 'password', placeholder: '****', type: 'password' }),
+        frmbutton = $("<div />", { id: "submitLogin", text: "Log In" });
+    login.append(form, frmusername, frmpassword, $('<br />'), frmbutton);
+    $(container).before(login);
+    $("#login").dialog({
+        autoOpen: true,
+        open: function(event, ui) {
+            $(this).parent().css('position', 'fixed');
+        }
+    }).on( 'keypress', function(e) {
+        if( e.which == 13 ) {
+            $("#submitLogin").trigger( 'click' );
+        }
+    });;
+    $("#submitLogin").button().on( 'click', function(e) {
+        e.preventDefault();
+
+        username = $("#username").val();
+        var password = $("#password").val();
+
+        authenticate( username, password );
+        socket.emit( "admin" , { method: 'register' });
+    });
+}
+
 function generateInput() {
     // Use Jquery to create inputs
     var input = $('<textarea/>').attr('id','string'),
@@ -186,12 +215,14 @@ function renderTable( data ) {
  * ********************/
 
 
-// TODO: Catch register event
+// Catch register
 socket.on( 'register', function( data ) {
     // If registration is successful
     // save authentication information
     // in auth variable
     if( data.reply && data.key != null ) {
+        $("#login").remove();
+        generateInput();
         // Auth variable is global and stores the user
         // and the key associated with that user
         auth = { user: data.user, key: data.key };
@@ -200,6 +231,20 @@ socket.on( 'register', function( data ) {
 // TODO: Catch session updates
 socket.on( 'sessions', function( data ) {
     // Interact
+    var tabs = $( "<div />", { id: "tabs", class: "tabs-bottom" }),
+        list = $( "<ul />" );
+    $.each( data.rooms, function( key, value ) {
+        $.each( value, function( key, value ) {
+            list.append( $( "<li />" ).append( $("<a />" , { href: "#" + key + "-tab" }).html( value ) ) );
+        });
+    });
+    tabs.append( list );
+    $(container).append( tabs );
+    
+    // Move tabs
+    $( "#tabs" ).tabs();
+    $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass( "ui-corner-all ui-corner-top" ).addClass( "ui-corner-bottom" );
+    $( ".tabs-bottom -ui-tabs-nav" ).appendTo( ".tabs-bottom" );
     console.log( data );
 });
 // Catch rules
@@ -212,4 +257,4 @@ socket.on('reply', function( data ) {
     renderTable( data );    
 });
 
-generateInput();
+showLogin();
