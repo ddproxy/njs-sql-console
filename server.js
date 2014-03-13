@@ -152,9 +152,11 @@ io.sockets.on( 'connection', function( socket ) {
     socket.on( 'register', function( data ) {
         console.log( data );
         if( data.pass == config.password) {
-            socket.emit( 'rules', { bad: badQueries, noLimit: ignoreLimit });
-            socket.emit( 'sessions', { rooms: io.rooms });
             registerSocket( data.user );
+            socket.emit( 'rules', { bad: badQueries, noLimit: ignoreLimit });
+            var rooms = io.sockets.manager.rooms;
+            socket.emit( 'sessions', { rooms: rooms });
+            console.log( io.sockets.manager.rooms );
         } else {
             socket.emit( 'register', { reply: false } );
         }
@@ -166,6 +168,7 @@ io.sockets.on( 'connection', function( socket ) {
         var key = Math.random().toString(36).substring(7);
         userList[user] = { key: key };
         socket.emit( 'register', { reply: true, key: key } );
+        socket.join( user );
     }
 
 

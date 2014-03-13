@@ -9,9 +9,9 @@
 
 var container = document.getElementById("container"),
     table = $("#data"),
-    body = $("#dataBody"),
     html = '',
     dataObject,
+    active,
     auth,
     columns = Array();
 
@@ -102,7 +102,9 @@ function room( room ) {
     );
 }
 /*********************
+ *
  * UI Functions
+ *
  * *******************/
 // UI Create Query Input
 function showLogin() {
@@ -160,7 +162,7 @@ function renderTable( data ) {
         columns.push(key);
     });
     head = $('tr').append( head );
-    $('#dataHead tr').replaceWith(head);
+    $('#'+ active +' .dataHead tr').replaceWith(head);
     // End generate header row
     // Generate column data for DataTables
     $.each(columns, function(i,v) {
@@ -177,7 +179,7 @@ function renderTable( data ) {
     });
     // End DataTables data generation
     // Wipe table for new data
-    body.empty();
+    $('#' + active + ' .dataBody').empty();
     // Initiate DataTable
     dataObject = table.dataTable( {
         "bProcess":true,
@@ -206,8 +208,6 @@ function renderTable( data ) {
     });
 }
 
-// TODO: Submit authentication details
-
 /**********************
  *
  * Socket Listeners
@@ -233,14 +233,21 @@ socket.on( 'sessions', function( data ) {
     // Interact
     var tabs = $( "<div />", { id: "tabs", class: "tabs-bottom" }),
         list = $( "<ul />" );
+
+    var rooms = [];
     $.each( data.rooms, function( key, value ) {
-        $.each( value, function( key, value ) {
-            list.append( $( "<li />" ).append( $("<a />" , { href: "#" + key + "-tab" }).html( value ) ) );
-        });
+        if(key != '' ) {
+            list.append( $( "<li />" ).append( $("<a />" , { href: "#" + key + "-tab" }).html( key ) ) );
+            rooms.push(key+'-tab');
+        }
     });
+    active = rooms[0]; 
     tabs.append( list );
     $(container).append( tabs );
-    
+    $.each( rooms, function( key, value ) {
+        $(container).append( $('<div/>', { id: value }) );
+        $(("#container > .data").clone().appendTo($("#"+value));
+    });
     // Move tabs
     $( "#tabs" ).tabs();
     $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass( "ui-corner-all ui-corner-top" ).addClass( "ui-corner-bottom" );
