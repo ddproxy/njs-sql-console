@@ -237,6 +237,7 @@ socket.on( 'sessions', function( data ) {
     var rooms = [];
     $.each( data.rooms, function( key, value ) {
         if(key != '' ) {
+            key = key.replace(/\//g,'');
             list.append( $( "<li />" ).append( $("<a />" , { href: "#" + key + "-tab" }).html( key ) ) );
             rooms.push(key+'-tab');
         }
@@ -245,8 +246,9 @@ socket.on( 'sessions', function( data ) {
     tabs.append( list );
     $(container).append( tabs );
     $.each( rooms, function( key, value ) {
-        $(container).append( $('<div/>', { id: value }) );
-        $(("#container > .data").clone().appendTo($("#"+value));
+        value = value.replace(/\//g,'');
+        $("#tabs").append( $('<div/>', { id: value }) );
+        $($("#container > .data")).clone().appendTo($("#"+value));
     });
     // Move tabs
     $( "#tabs" ).tabs();
