@@ -8,12 +8,10 @@
  *************************/
 
 var container = document.getElementById("container"),
-    table = $("#data"),
     html = '',
     dataObject,
     active,
-    auth,
-    columns = Array();
+    auth;
 
 /**********************
  *
@@ -153,16 +151,20 @@ function renderTable( data ) {
     if(typeof aoColumns !== 'undefined' ) aoData = [];
     
     // Use Jquery to create elements
-    var head = [];
-    var tmp = data[0];
-    var aoColumns = [];
+    var head = [],
+        columns = [],
+        tmp = data[0],
+        aoColumns = [],
+        table = $("#" + active + " .data");
     // Generate the header row
     $.each(tmp, function( key, value) {
-        head.push($('th').append(key));
-        columns.push(key);
+        columns.push( key );
+        head.push($('<th/>').append(key));
     });
-    head = $('tr').append( head );
-    $('#'+ active +' .dataHead tr').replaceWith(head);
+
+    head = $('<tr/>').append( head );
+    $('#'+ active + ' table.data thead.dataHead').empty();
+    $('#'+ active + ' table.data thead.dataHead').append( head );
     // End generate header row
     // Generate column data for DataTables
     $.each(columns, function(i,v) {
@@ -177,9 +179,11 @@ function renderTable( data ) {
         });
         aaData.push(tmp);
     });
+    console.log( aaData );
     // End DataTables data generation
     // Wipe table for new data
     $('#' + active + ' .dataBody').empty();
+    
     // Initiate DataTable
     dataObject = table.dataTable( {
         "bProcess":true,
@@ -242,7 +246,8 @@ socket.on( 'sessions', function( data ) {
             rooms.push(key+'-tab');
         }
     });
-    active = rooms[0]; 
+    // Set default active room
+    active = rooms[0].replace(/\//g,''); 
     tabs.append( list );
     $(container).append( tabs );
     $.each( rooms, function( key, value ) {
@@ -251,7 +256,11 @@ socket.on( 'sessions', function( data ) {
         $($("#container > .data")).clone().appendTo($("#"+value));
     });
     // Move tabs
-    $( "#tabs" ).tabs();
+    $( "#tabs" ).tabs({
+        activate: function( e, ui) {
+            active = ui.newTab.find('a').attr('href').replace(/#/g,'');
+        }
+    });
     $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass( "ui-corner-all ui-corner-top" ).addClass( "ui-corner-bottom" );
     $( ".tabs-bottom -ui-tabs-nav" ).appendTo( ".tabs-bottom" );
     console.log( data );
