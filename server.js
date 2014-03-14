@@ -137,7 +137,8 @@ console.log( "SocketIO is listening to port::" + config.port );
 
 var badQueries = params.bad,
     ignoreLimit = params.noLimit,
-    userList = [];
+    userList = [],
+    socketData = [];
 console.log( "Now Ready" );
 
 /*************************
@@ -167,7 +168,8 @@ io.sockets.on( 'connection', function( socket ) {
     function registerSocket( user ) {
         var key = Math.random().toString(36).substring(7);
         userList[user] = { key: key };
-        socket.emit( 'register', { reply: true, key: key } );
+        socket.emit( 'register', { reply: true, user: user, key: key } );
+        socket.room = user;
         socket.join( user );
     }
 
@@ -178,11 +180,15 @@ io.sockets.on( 'connection', function( socket ) {
 	*
 	****************************/
     socket.on( 'query', function( data ) {
+        console.log( "Query" );
+        console.log( data );
+        var activeSocket = data.session;
         var auth = data.auth;
         data = data.query;
         data = data.replace(/;/g,'');
         var queryC = data.toLowerCase();
         var pass = true;
+        
         badQueries.forEach( function( call ) {
             if(queryC.indexOf( call ) != -1) {
                 console.log("Caught Illegal call: " + data );
@@ -198,6 +204,9 @@ io.sockets.on( 'connection', function( socket ) {
             });
             if( limit ) data += ' LIMIT 500;'; 
         }
+        //if( userList[auth.user].key != auth.key ) {
+        //    pass = false;
+        //}
 
         if(pass) {        
             db.query( data, function( err, reply ) {
@@ -206,12 +215,25 @@ io.sockets.on( 'connection', function( socket ) {
                     socket.emit('reply', { 0: { reply: 'Failed Query -- Error :' + err} });
                 }
                 if(reply) {
-                    socket.emit('reply', reply );
+                    console.log( "Sending data to socket :" + activeSocket );
+                    socketData[activeSocket] = reply;
+                    io.sockets.in(activeSocket).emit('reply', reply );
                 }
             });
         } else {
             socket.emit('reply', { 0: { reply: 'Failed Query -- Illegal Syntax' } });
         }
     });
+    socket.on( 'retrieve', function( data ) {
+        if( userList[data.auth.user] != null && userList[data.auth.user].key == data.auth.key ) {
+            console.log( data );
+            activeSocket = data.data;
+            console.log( activeSocket);
+            socket.leave(socket.room);
+            socket.join(activeSocket);
+            console.log( socketData[activeSocket] );
+            if(socketData[activeSocket] != null ) socket.emit( 'reply', socketData[activeSocket] );
+        }
+    } );
 
 });

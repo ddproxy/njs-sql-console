@@ -11,6 +11,7 @@ var container = document.getElementById("container"),
     html = '',
     dataObject,
     active,
+    session,
     auth;
 
 /**********************
@@ -73,10 +74,12 @@ function activateQuery() {
 
 // Query the database via the socket
 function query( string ) {
+    console.log( session );
     socket.emit("query", {
         auth: auth,
-        query: string
-        }
+        query: string,
+        session: session
+    }
     );
 }
 
@@ -144,12 +147,21 @@ function generateInput() {
 }
 // UI Render Table
 function renderTable( data ) {
+    var tables = $.fn.dataTable.fnTables(true);
+    $(tables).each(function () {
+        $(this).dataTable().fnClearTable(); 
+        $(this).dataTable().fnDestroy();
+    });
+   
     // TODO: Distinguish between subscribed sessions
-    if(dataObject != null)dataObject.fnDestroy();
     if(typeof columns !== 'undefined' ) columns = [];
     if(typeof aaData !== 'undefined' ) aaData = [];
     if(typeof aoColumns !== 'undefined' ) aoData = [];
-    
+   
+    console.log( "RENDER!" );
+     
+    console.log( active );
+
     // Use Jquery to create elements
     var head = [],
         columns = [],
@@ -172,11 +184,13 @@ function renderTable( data ) {
     });
     // Generate data for DataTables
     var aaData = Array();
+    console.log( data );
     $.each(data, function(i,v) {
         var tmp = new Array();
         $.each(v, function(i,v) {
             tmp.push( v );
         });
+        console.log( tmp );
         aaData.push(tmp);
     });
     console.log( aaData );
@@ -247,7 +261,9 @@ socket.on( 'sessions', function( data ) {
         }
     });
     // Set default active room
-    active = rooms[0].replace(/\//g,''); 
+    
+    active = auth.user + '-tab'; 
+    session = active.replace(/\-tab/g,'');
     tabs.append( list );
     $(container).append( tabs );
     $.each( rooms, function( key, value ) {
@@ -255,35 +271,18 @@ socket.on( 'sessions', function( data ) {
         $("#tabs").append( $('<div/>', { id: value }) );
         $($("#container > .data")).clone().appendTo($("#"+value));
     });
+    aind = $( "#" + active ).index('li');
     // Move tabs
     $( "#tabs" ).tabs({
         activate: function( e, ui) {
+            $("#"+active+" > .data").replaceWith( $($("#container > .data")).clone() );
             active = ui.newTab.find('a').attr('href').replace(/#/g,'');
-            var ntable = $("#" + active + " .data");
-            dataObject = ntable.dataTable( {
-                "bProcess":true,
-                "bDestroy":true,
-                "sDom": 'T<"H"Clfr>t<"F"ip>',
-                "sScrollX": "100%",
-                "bLengthChange": true,
-                "iDisplayLength": 25,
-                "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-                "bJQueryUI": true,
-                "oTableTools": {
-                    "aButtons": [
-                        "copy",
-                        {
-                                "sExtends": "csv",
-                                "sTitle": "export"
-                        },{
-                                "sExtends": "xls",
-                                "sTitle": "export"
-                        }
-                ],
-                    "sSwfPath": "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf"
-                }
-            });
-        }
+            session = active.replace(/\-tab/g,'');
+            console.log( active );
+            $("#"+active+" > .data").replaceWith( $($("#container > .data")).clone() );
+            socket.emit('retrieve', { auth: auth, data: session } );
+        },
+        active: aind 
     });
     $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass( "ui-corner-all ui-corner-top" ).addClass( "ui-corner-bottom" );
     $( ".tabs-bottom -ui-tabs-nav" ).appendTo( ".tabs-bottom" );
