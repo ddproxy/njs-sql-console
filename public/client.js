@@ -259,6 +259,30 @@ socket.on( 'sessions', function( data ) {
     $( "#tabs" ).tabs({
         activate: function( e, ui) {
             active = ui.newTab.find('a').attr('href').replace(/#/g,'');
+            var ntable = $("#" + active + " .data");
+            dataObject = ntable.dataTable( {
+                "bProcess":true,
+                "bDestroy":true,
+                "sDom": 'T<"H"Clfr>t<"F"ip>',
+                "sScrollX": "100%",
+                "bLengthChange": true,
+                "iDisplayLength": 25,
+                "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                "bJQueryUI": true,
+                "oTableTools": {
+                    "aButtons": [
+                        "copy",
+                        {
+                                "sExtends": "csv",
+                                "sTitle": "export"
+                        },{
+                                "sExtends": "xls",
+                                "sTitle": "export"
+                        }
+                ],
+                    "sSwfPath": "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf"
+                }
+            });
         }
     });
     $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass( "ui-corner-all ui-corner-top" ).addClass( "ui-corner-bottom" );
