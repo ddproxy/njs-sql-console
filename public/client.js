@@ -12,7 +12,8 @@ var container = document.getElementById("container"),
     dataObject,
     active,
     session,
-    auth;
+    auth,
+    tabs;
 
 /**********************
  *
@@ -91,6 +92,20 @@ function authenticate( user, pass ) {
         pass: pass
         }
     );
+}
+
+// Add tab
+function addTab( room ) {
+    var tabTemplate = "<li><a href='#{href}'>#{label}</a></li>",
+        li = $( tabTemplate.replace( /#{href\}/g, "#" +room+"-tab").replace( /#\{label\}/g, room) );
+    tabs.find( ".ui-tabs-nav" ).append ( li );
+    tabs.append( $("<div />", { id: room + "-tab" }).append( $("#container > .data").clone() ) );
+    tabs.tabs( "refresh" );
+}
+// Remove tab
+function removeTab( room ) {
+    tabs.find( "#"+room+"-tab" ).remove();
+    $( "[aria-controls='"+room+"-tab']" ).remove();
 }
 
 // Change socket room
@@ -247,12 +262,19 @@ socket.on( 'register', function( data ) {
     }
 });
 // TODO: Catch session updates
+socket.on( 'sessionUpdate', function( data ) {
+    if( data.action == 'add' ) {
+        addTab( data.room );
+    } else if( data.action == 'remove' ) {
+        removeTab( data.room );
+    }
+});
+
 socket.on( 'sessions', function( data ) {
     // Interact
-    var tabs = $( "<div />", { id: "tabs", class: "tabs-bottom" }),
-        list = $( "<ul />" );
-
-    var rooms = [];
+     tabs = $( "<div />", { id: "tabs", class: "tabs-bottom" });
+    var list = $( "<ul />" ),
+        rooms = [];
     $.each( data.rooms, function( key, value ) {
         if(key != '' ) {
             key = key.replace(/\//g,'');

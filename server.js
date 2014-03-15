@@ -163,7 +163,9 @@ io.sockets.on( 'connection', function( socket ) {
         }
 	// TODO: Present optional sessions for sockets to join
 	});
-
+    socket.on( 'disconnect', function() {
+        socket.broadcast.emit( 'sessionUpdate', { action: 'remove', room: socket.room } );
+    });
     // Function
     function registerSocket( user ) {
         var key = Math.random().toString(36).substring(7);
@@ -171,6 +173,7 @@ io.sockets.on( 'connection', function( socket ) {
         socket.emit( 'register', { reply: true, user: user, key: key } );
         socket.room = user;
         socket.join( user );
+        socket.broadcast.emit( 'sessionUpdate', { action: 'add', room: socket.room } );
     }
 
 
