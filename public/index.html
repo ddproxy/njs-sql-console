@@ -1,6 +1,7 @@
 <html>
     <head>
-        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
     </head>
 
 <body>
@@ -83,7 +84,6 @@
             border-collapse: collapse;
             border-spacing: 0;
         } 
-        
         body {
             background: rgb(224,224,224);
             padding: 0;
@@ -110,6 +110,28 @@
             height: 50px;
             width: 80%;
             margin: auto;
+        }
+        @media screen and (max-device-width: 480px) {
+            body {
+                width: 100%;
+            }
+            #container {
+                width: 100%;
+                height: 80%;
+            }
+            #string {
+                width: 100%;
+                height: 20%;
+            }
+            #query, .codemirror {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .ui-dialog {
+                width: 100%;
+                margin: 0;
+            }
         }
         #tabs {
             margin: auto;
