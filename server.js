@@ -182,6 +182,11 @@ io.sockets.on( 'connection', function( socket ) {
 	* Logged in socket listeners
 	*
 	****************************/
+    socket.on( 'chat', function( data ) {
+        console.log( data );
+        io.sockets.emit('chat', { data: data.auth.user + ": " + data.query } );
+
+    });
     socket.on( 'query', function( data ) {
         console.log( "Query" );
         console.log( data );

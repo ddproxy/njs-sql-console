@@ -59,12 +59,6 @@ function activateQuery() {
         var string = $("#string").val();
         query(string);
     });
-    $(document).keypress( function( e ) {
-        if( e.which == 13 ) {
-            e.preventDefault();
-            $("#query").trigger( 'click' );
-        }
-    });
 } // end function activateQuery
 
 /**********************
@@ -83,7 +77,15 @@ function query( string ) {
     }
     );
 }
-
+// Send chat to socket
+function chat( string ) {
+    console.log( session );
+    socket.emit("chat", {
+        auth: auth,
+        query: string
+    }
+    );
+}
 // Authenticate with the socket
 function authenticate( user, pass ) {
     // Socket
@@ -175,11 +177,23 @@ function generateInput() {
                 $('<h3 />').append('Settings'),
                 $('<div />').attr('id','settings').append('Testing'),
                 $('<h3 />').append('Chat'),
-                $('<div />').attr('id','chat').append('Testing')
+                $('<div />').attr('id','chat').append(
+                    $('<div/>', { id: 'chat-content' } ),
+                    $('<textarea/>', {id: 'chat-box' } ),
+                    $('<div/>').append(
+                            $('<div/>', { id: 'send-chat'} ).append('Send').button().on(
+                                'click', function() {
+                                    var string = $("#chat-box").val();
+                                    chat(string);
+                                })
+
+                        )
+                )
             );
     $(container).after(panel);
     $('#side-panel').accordion( {
-        heightStyle: "content"
+        heightStyle: "content",
+        collapsible: true
     } );
     $('#panel').bigSlide( {
         menu: '#side-panel',
@@ -287,6 +301,12 @@ socket.on( 'register', function( data ) {
         auth = { user: data.user, key: data.key };
     }
 });
+// Catch chat
+socket.on( 'chat', function( data ) {
+    console.log( data );
+    $('#chat-content').append( $('<p/>').html( data.data ) );
+} );
+
 // TODO: Catch session updates
 socket.on( 'sessionUpdate', function( data ) {
     if( data.action == 'add' ) {
