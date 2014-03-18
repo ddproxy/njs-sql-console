@@ -155,10 +155,36 @@ function showLogin() {
 function generateInput() {
     // Use Jquery to create inputs
     var input = $('<textarea/>').attr('id','string'),
-        button = $('<div/>').attr('id','query').append('Query');
+        button = $('<div/>').append(
+            $('<div/>', {id: 'button' }).append(
+                $('<div/>', {id: 'query'}).append('Query'),
+                $('<div/>', {id: 'panel'}).append(
+                        $('<a/>', {
+                            href:'#side-panel',
+                            class: 'menu-link'
+                        }).append('&#9776;')
+                    ).button()
+            )
+        );
     $(container).after(input,button);
     // Start query listeners
     activateQuery();
+    var panel = $('<div />', {
+        id: 'side-panel',
+        class: 'panel' }).append(
+                $('<h3 />').append('Settings'),
+                $('<div />').attr('id','settings').append('Testing'),
+                $('<h3 />').append('Chat'),
+                $('<div />').attr('id','chat').append('Testing')
+            );
+    $(container).after(panel);
+    $('#side-panel').accordion( {
+        heightStyle: "content"
+    } );
+    $('#panel').bigSlide( {
+        menu: '#side-panel',
+        side: 'right'
+    });
 }
 // UI Render Table
 function renderTable( data ) {
@@ -168,7 +194,7 @@ function renderTable( data ) {
         $(this).dataTable().fnDestroy();
     });
    
-    // TODO: Distinguish between subscribed sessions
+    // TODO: Tag updated tabs
     if(typeof columns !== 'undefined' ) columns = [];
     if(typeof aaData !== 'undefined' ) aaData = [];
     if(typeof aoColumns !== 'undefined' ) aoData = [];
@@ -313,7 +339,14 @@ socket.on( 'sessions', function( data ) {
 // Catch rules
 socket.on( 'rules', function( data ) {
     // Display rules
-    console.log( data );
+    var rules = $('<p/>');
+    $.each(data, function( key, value) {
+        rules.append($('<h4/>').append(key));
+        $.each(value, function( key, value) {
+            rules.append($('<p/>').append(value));
+        });
+    });
+    $('#settings').html(rules);
 });
 // Catch query reply
 socket.on('reply', function( data ) {
