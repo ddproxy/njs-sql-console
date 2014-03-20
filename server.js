@@ -265,7 +265,6 @@ io.sockets.on( 'connection', function( socket ) {
     });
     socket.on( 'retrieve', function( data ) {
         if( userList[data.auth.user] != null && userList[data.auth.user].key == data.auth.key ) {
-            console.log( data );
             activeSocket = data.data;
             console.log( activeSocket);
             socket.leave(socket.room);

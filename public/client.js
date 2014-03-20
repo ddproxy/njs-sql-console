@@ -33,6 +33,7 @@ var container = document.getElementById("container"),
     rooms = [],
     session,
     auth,
+    editor,
     tabs;
 
 /**********************
@@ -52,7 +53,7 @@ var socket = io.connect( 'http://' + hostname + ':' + port );
  *********************/
 function activateQuery() {
     var mime = 'text/x-mysql';
-    var editor = CodeMirror.fromTextArea(document.getElementById('string'), {
+    editor = CodeMirror.fromTextArea(document.getElementById('string'), {
         mode: mime,
         indentWithTabs: true,
         smartIndent: true,
@@ -67,7 +68,6 @@ function activateQuery() {
         // Update #string to formed query
         $("#string").val( cm.getValue() );
     });
-
     /*********************
      *
      * Listeners
@@ -209,9 +209,9 @@ function generateInput() {
                 $('<h3 />').append('History').on('click', function() {
                     socket.emit('history', { auth: auth, data: true } );
                 }),
-                $('<div />').attr('id','history').append('Testing'),
+                $('<div />', { id: 'history', style: "height: 80%; overflow: auto;" } ).append('Testing'),
                 $('<h3 />').append('Settings'),
-                $('<div />').attr('id','settings').append('Testing')
+                $('<div />', { id: 'settings' } ).append('Testing')
             );
     $(container).after(panel);
     var chatMirror = CodeMirror.fromTextArea(document.getElementById('chat-box'), {
@@ -237,7 +237,13 @@ function generateInput() {
             $("#send-chat").trigger( 'click' );
         }
     });
-
+    // History hotlink
+    $("#history").on( 'click','p', function( e ) {
+        value = $(e.target).html();
+        i = $('.CodeMirror')[1].CodeMirror;
+        console.log(i);
+        i.setValue(value);
+    });
     $('#side-panel').accordion( {
         heightStyle: "content",
         collapsible: true
@@ -356,7 +362,7 @@ socket.on( 'history', function( data ) {
     console.log( data );
     $("#history").html('');
     $.each( data.data , function( key, value ) {
-        $('#history').append( $('<p/>').html(value) );
+        $('#history').append( $('<p/>', { style: "margin: 5px" } ).html(value) );
     });
 });
 // TODO: Catch session updates
