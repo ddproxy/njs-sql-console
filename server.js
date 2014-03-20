@@ -138,6 +138,7 @@ console.log( "SocketIO is listening to port::" + config.port );
 var badQueries = params.bad,
     ignoreLimit = params.noLimit,
     userList = [],
+    roomList = [],
     socketData = [];
 console.log( "Now Ready" );
 
@@ -175,13 +176,18 @@ io.sockets.on( 'connection', function( socket ) {
      * *************************/
 
     function sessionManagement( room ) {
-        checkRoom = "/"+room;
-        var rooms = Object.keys(io.sockets.manager.rooms);
-        if( rooms.indexOf(checkRoom) > -1 ) {
-            socket.broadcast.emit( 'sessionUpdate', { action: 'add', room: room } );
-        } else {
-            socket.broadcast.emit( 'sessionUpdate', { action: 'remove', room: room } );
-        }
+        setTimeout(function() {
+            checkRoom = "/"+room;
+            var rooms = Object.keys(io.sockets.manager.rooms);
+            console.log(rooms);
+            if( rooms.indexOf(checkRoom) > -1 && roomList.indexOf(checkRoom) == -1 ) {
+                socket.broadcast.emit( 'sessionUpdate', { action: 'add', room: room } );
+                roomList.push(room);
+            } else if( rooms.indexOf(checkRoom) == -1 && roomList.indexOf(checkRoom) > -1 ) {
+                socket.broadcast.emit( 'sessionUpdate', { action: 'remove', room: room } );
+                roomList.splice(roomList.indexOf(room),1);
+            }
+        }, 1000);
     }
     function registerSocket( user ) {
         var key = Math.random().toString(36).substring(7);
