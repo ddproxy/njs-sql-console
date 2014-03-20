@@ -173,8 +173,6 @@ function generateInput() {
     var panel = $('<div />', {
         id: 'side-panel',
         class: 'panel' }).append(
-                $('<h3 />').append('Settings'),
-                $('<div />').attr('id','settings').append('Testing'),
                 $('<h3 />').append('Chat'),
                 $('<div />', { id: 'chat', style: 'padding: 1em;' } ).append(
                     $('<div/>', { id: 'chat-content', style: 'font-size: 75%;' } ),
@@ -188,7 +186,13 @@ function generateInput() {
                                 })
 
                         )
-                )
+                ),
+                $('<h3 />').append('History').on('click', function() {
+                    socket.emit('history', { auth: auth, data: true } );
+                }),
+                $('<div />').attr('id','history').append('Testing'),
+                $('<h3 />').append('Settings'),
+                $('<div />').attr('id','settings').append('Testing')
             );
     $(container).after(panel);
     var chatMirror = CodeMirror.fromTextArea(document.getElementById('chat-box'), {
@@ -294,6 +298,7 @@ function renderTable( data ) {
                 }
         ],
             "sSwfPath": "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf"
+
         }
     });
 }
@@ -327,7 +332,14 @@ socket.on( 'chat', function( data ) {
     $('#chat-content').append( $('<p/>').html( msg ) );
     $('#chat-content').scrollTop($("#chat-content")[0].scrollHeight);
 } );
-
+// Catch history update
+socket.on( 'history', function( data ) {
+    console.log( data );
+    $("#history").html('');
+    $.each( data.data , function( key, value ) {
+        $('#history').append( $('<p/>').html(value) );
+    });
+});
 // TODO: Catch session updates
 socket.on( 'sessionUpdate', function( data ) {
     if( data.action == 'add' && rooms.indexOf(data.room + "-tab") == -1 ) {

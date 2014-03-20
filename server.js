@@ -139,6 +139,7 @@ var badQueries = params.bad,
     ignoreLimit = params.noLimit,
     userList = [],
     roomList = [],
+    history = [],
     socketData = [];
 console.log( "Now Ready" );
 
@@ -207,11 +208,19 @@ io.sockets.on( 'connection', function( socket ) {
 	*
 	****************************/
     socket.on( 'chat', function( data ) {
-        console.log( data );
-        io.sockets.emit('chat', { data: data.auth.user + ": " + data.query } );
+        if( userList[data.auth.user] != null && userList[data.auth.user].key == data.auth.key ) {
+            console.log( data );
+            io.sockets.emit('chat', { data: data.auth.user + ": " + data.query } );
+        }
 
     });
+    socket.on( 'history', function( data ) {
+        if( userList[data.auth.user] != null && userList[data.auth.user].key == data.auth.key ) {
+            socket.emit( 'history', { data: history } );
+        }
+    });
     socket.on( 'query', function( data ) {
+        history.push(data.query);
         console.log( "Query" );
         console.log( data );
         var activeSocket = data.session;
@@ -220,7 +229,10 @@ io.sockets.on( 'connection', function( socket ) {
         data = data.replace(/;/g,'');
         var queryC = data.toLowerCase();
         var pass = true;
-        
+        if( auth.key !== userList[auth.user].key ) {
+            pass = false;
+        }
+
         badQueries.forEach( function( call ) {
             if(queryC.indexOf( call ) != -1) {
                 console.log("Caught Illegal call: " + data );
@@ -236,18 +248,13 @@ io.sockets.on( 'connection', function( socket ) {
             });
             if( limit ) data += ' LIMIT 500;'; 
         }
-        //if( userList[auth.user].key != auth.key ) {
-        //    pass = false;
-        //}
-
+       
         if(pass) {        
             db.query( data, function( err, reply ) {
                 if(err) {
-                    console.log("ERR:" + err);
                     socket.emit('reply', { 0: { reply: 'Failed Query -- Error :' + err} });
                 }
                 if(reply) {
-                    console.log( "Sending data to socket :" + activeSocket );
                     socketData[activeSocket] = reply;
                     io.sockets.in(activeSocket).emit('reply', reply );
                 }
