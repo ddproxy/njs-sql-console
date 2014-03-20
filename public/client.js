@@ -293,12 +293,15 @@ socket.on( 'register', function( data ) {
     // If registration is successful
     // save authentication information
     // in auth variable
+    console.log( data );
     if( data.reply && data.key != null ) {
         $("#login").remove();
-        generateInput();
+        
         // Auth variable is global and stores the user
         // and the key associated with that user
         auth = { user: data.user, key: data.key };
+        // Now auth is set, gen the page
+        generateInput();
     }
 });
 // Catch chat
@@ -329,7 +332,7 @@ socket.on( 'sessions', function( data ) {
         }
     });
     // Set default active room
-    
+    console.log( auth );
     active = auth.user + '-tab'; 
     session = active.replace(/\-tab/g,'');
     tabs.append( list );
