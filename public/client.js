@@ -11,6 +11,7 @@ var container = document.getElementById("container"),
     html = '',
     dataObject,
     active,
+    rooms = [],
     session,
     auth,
     tabs;
@@ -69,7 +70,6 @@ function activateQuery() {
 
 // Query the database via the socket
 function query( string ) {
-    console.log( session );
     socket.emit("query", {
         auth: auth,
         query: string,
@@ -79,7 +79,6 @@ function query( string ) {
 }
 // Send chat to socket
 function chat( string ) {
-    console.log( session );
     socket.emit("chat", {
         auth: auth,
         query: string
@@ -177,13 +176,14 @@ function generateInput() {
                 $('<h3 />').append('Settings'),
                 $('<div />').attr('id','settings').append('Testing'),
                 $('<h3 />').append('Chat'),
-                $('<div />').attr('id','chat').append(
-                    $('<div/>', { id: 'chat-content' } ),
-                    $('<textarea/>', {id: 'chat-box' } ),
+                $('<div />', { id: 'chat', style: 'padding: 1em;' } ).append(
+                    $('<div/>', { id: 'chat-content', style: 'font-size: 75%;' } ),
+                    $('<textarea/>', {id: 'chat-box', style: 'width: 100%;' } ),
                     $('<div/>').append(
-                            $('<div/>', { id: 'send-chat'} ).append('Send').button().on(
+                            $('<div/>', { id: 'send-chat', style: 'width: 100%;'} ).append('Send').button().on(
                                 'click', function() {
                                     var string = $("#chat-box").val();
+                                    $("#chat-box").val('');
                                     chat(string);
                                 })
 
@@ -191,6 +191,30 @@ function generateInput() {
                 )
             );
     $(container).after(panel);
+    var chatMirror = CodeMirror.fromTextArea(document.getElementById('chat-box'), {
+        mime: 'text/plain',
+        disableSpellCheck: false,
+        textWrapping: true,
+        indentWithTabs: true,
+        smartIndent: true,
+        extraKeys: {
+            "Enter": function ( i ) {
+                i.setValue('');
+                // Trigger #send-chat click event
+                $("#send-chat").trigger( 'click' );
+            }
+        }
+    }).on( 'change',function( cm ) {
+        // Update #chat-box to formed query
+        $("#chat-box").val( cm.getValue() );
+    });
+    $("#chat-box").on( 'keypress', function(e,ui) {
+        if( e.which == 13) {
+            e.preventDefault()
+            $("#send-chat").trigger( 'click' );
+        }
+    });
+
     $('#side-panel').accordion( {
         heightStyle: "content",
         collapsible: true
@@ -213,10 +237,6 @@ function renderTable( data ) {
     if(typeof aaData !== 'undefined' ) aaData = [];
     if(typeof aoColumns !== 'undefined' ) aoData = [];
    
-    console.log( "RENDER!" );
-     
-    console.log( active );
-
     // Use Jquery to create elements
     var head = [],
         columns = [],
@@ -239,16 +259,13 @@ function renderTable( data ) {
     });
     // Generate data for DataTables
     var aaData = Array();
-    console.log( data );
     $.each(data, function(i,v) {
         var tmp = new Array();
         $.each(v, function(i,v) {
             tmp.push( v );
         });
-        console.log( tmp );
         aaData.push(tmp);
     });
-    console.log( aaData );
     // End DataTables data generation
     // Wipe table for new data
     $('#' + active + ' .dataBody').empty();
@@ -293,7 +310,6 @@ socket.on( 'register', function( data ) {
     // If registration is successful
     // save authentication information
     // in auth variable
-    console.log( data );
     if( data.reply && data.key != null ) {
         $("#login").remove();
         
@@ -304,26 +320,28 @@ socket.on( 'register', function( data ) {
         generateInput();
     }
 });
-// Catch chat
+// Catch chat messages
 socket.on( 'chat', function( data ) {
-    console.log( data );
-    $('#chat-content').append( $('<p/>').html( data.data ) );
+    msg = data.data;
+    msg = msg.replace( auth.user, '<span style="color: rgb(126, 201, 230);">' + auth.user + '</span>');
+    $('#chat-content').append( $('<p/>').html( msg ) );
+    $('#chat-content').scrollTop($("#chat-content")[0].scrollHeight);
 } );
 
 // TODO: Catch session updates
 socket.on( 'sessionUpdate', function( data ) {
-    if( data.action == 'add' ) {
+    if( data.action == 'add' && rooms.indexOf(data.room + "-tab") == -1 ) {
         addTab( data.room );
-    } else if( data.action == 'remove' ) {
+    } else if( data.action == 'remove' && data.room != auth.user + "-tab" ) {
+        rooms.slice(rooms.indexOf(data.room + "-tab"),1);
         removeTab( data.room );
     }
 });
 
 socket.on( 'sessions', function( data ) {
     // Interact
-     tabs = $( "<div />", { id: "tabs", class: "tabs-bottom" });
-    var list = $( "<ul />" ),
-        rooms = [];
+    tabs = $( "<div />", { id: "tabs", class: "tabs-bottom" });
+    var list = $( "<ul />" );
     $.each( data.rooms, function( key, value ) {
         if(key != '' ) {
             key = key.replace(/\//g,'');
@@ -332,7 +350,6 @@ socket.on( 'sessions', function( data ) {
         }
     });
     // Set default active room
-    console.log( auth );
     active = auth.user + '-tab'; 
     session = active.replace(/\-tab/g,'');
     tabs.append( list );
@@ -349,7 +366,6 @@ socket.on( 'sessions', function( data ) {
             $("#"+active+" > .data").replaceWith( $($("#container > .data")).clone() );
             active = ui.newTab.find('a').attr('href').replace(/#/g,'');
             session = active.replace(/\-tab/g,'');
-            console.log( active );
             $("#"+active+" > .data").replaceWith( $($("#container > .data")).clone() );
             socket.emit('retrieve', { auth: auth, data: session } );
         },
@@ -357,7 +373,6 @@ socket.on( 'sessions', function( data ) {
     });
     $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass( "ui-corner-all ui-corner-top" ).addClass( "ui-corner-bottom" );
     $( ".tabs-bottom -ui-tabs-nav" ).appendTo( ".tabs-bottom" );
-    console.log( data );
 });
 // Catch rules
 socket.on( 'rules', function( data ) {

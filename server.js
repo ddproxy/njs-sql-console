@@ -164,16 +164,34 @@ io.sockets.on( 'connection', function( socket ) {
 	// TODO: Present optional sessions for sockets to join
 	});
     socket.on( 'disconnect', function() {
-        socket.broadcast.emit( 'sessionUpdate', { action: 'remove', room: socket.room } );
+        // Depreciateing in favor method
+        // socket.broadcast.emit( 'sessionUpdate', { action: 'remove', room: socket.room } );
+        sessionManagement( socket.room );
     });
-    // Function
+    /***************************
+     *
+     * Function
+     *
+     * *************************/
+
+    function sessionManagement( room ) {
+        checkRoom = "/"+room;
+        var rooms = Object.keys(io.sockets.manager.rooms);
+        if( rooms.indexOf(checkRoom) > -1 ) {
+            socket.broadcast.emit( 'sessionUpdate', { action: 'add', room: room } );
+        } else {
+            socket.broadcast.emit( 'sessionUpdate', { action: 'remove', room: room } );
+        }
+    }
     function registerSocket( user ) {
         var key = Math.random().toString(36).substring(7);
         userList[user] = { key: key };
         socket.emit( 'register', { reply: true, user: user, key: key } );
         socket.room = user;
         socket.join( user );
-        socket.broadcast.emit( 'sessionUpdate', { action: 'add', room: socket.room } );
+        sessionManagement( socket.room );
+        // Depreciating in favor of method
+        //socket.broadcast.emit( 'sessionUpdate', { action: 'add', room: socket.room } );
     }
 
 
