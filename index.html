@@ -1,0 +1,134 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Njs-sql-console</title>
+  <meta name="description" content="Interact with your database through a nodeJS app">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Njs-sql-console</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Interact with your database through a nodeJS app</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/ddproxy/njs-sql-console/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/ddproxy/njs-sql-console/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/ddproxy/njs-sql-console" class="code">View Njs-sql-console on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
+<a name="nodejs-mysql-console-interface" class="anchor" href="#nodejs-mysql-console-interface"><span class="octicon octicon-link"></span></a>NodeJS MySql Console Interface</h1>
+
+<p>Interact with your database with single queries.
+Reply's are returned to a auto-generated Datatable. (CDN)
+Queries are 'formatted' by CodeMirror (CDN)</p>
+
+<p><strong>Features</strong></p>
+
+<ul>
+<li>Each user gets a tab</li>
+<li>When a new user logs in, a new tab is created</li>
+<li>When a user leaves the system, their tab is destroyed</li>
+<li>Each tab is a shared session
+
+<ul>
+<li>Sessions will update across all clients</li>
+<li>Session data is retrieved when tab is clicked</li>
+</ul>
+</li>
+</ul><h5>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h5>
+
+<p><strong>CDN</strong></p>
+
+<ul>
+<li>DataTables</li>
+<li>DataTables - Table Tools</li>
+<li>CodeMirror</li>
+</ul><h1>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<ul>
+<li>run sudo npm install to install node_modules</li>
+<li>copy config.js.example to config.json for both public and private directories</li>
+<li>modify config.js's to reflect your server and ports</li>
+</ul><h1>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h1>
+
+<h4>
+<a name="privateconfigjson" class="anchor" href="#privateconfigjson"><span class="octicon octicon-link"></span></a>private/config.json</h4>
+
+<pre><code>{
+"port": "3702",                     // Default port 3702
+"hostname": "localhost",            // Loopback
+"host": "database.hostname.com",    // Database location (aws endpoints should work)
+"user": "user",                     // Database user
+"password": "password",             // Database password
+"database": "schema"                // Database schema
+}
+</code></pre>
+
+<h4>
+<a name="publicconfigjs" class="anchor" href="#publicconfigjs"><span class="octicon octicon-link"></span></a>public/config.js</h4>
+
+<pre><code>var port = 3702;                        // Must match private/config.json
+var hostname = "www.hostname.com";       // Externally accessable URL
+</code></pre>
+
+<h1>
+<a name="use" class="anchor" href="#use"><span class="octicon octicon-link"></span></a>Use</h1>
+
+<h3>
+<a name="cli" class="anchor" href="#cli"><span class="octicon octicon-link"></span></a>CLI</h3>
+
+<pre><code>node server.js
+</code></pre>
+
+<h3>
+<a name="browser" class="anchor" href="#browser"><span class="octicon octicon-link"></span></a>Browser</h3>
+
+<p>Point your browser to <a href="http://www.hostname.com:3702/">www.hostname.com:3702/</a>
+Use any username and the password stored in private/config.json</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/ddproxy" class="avatar"><img src="https://avatars1.githubusercontent.com/u/105473?s=60" width="48" height="48"/></a> <a href="https://github.com/ddproxy">ddproxy</a> maintains <a href="https://github.com/ddproxy/njs-sql-console">Njs-sql-console</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/ddproxy/njs-sql-console/tarball/master" class="tar">tar</a><a href="https://github.com/ddproxy/njs-sql-console/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
