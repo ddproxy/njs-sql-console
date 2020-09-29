@@ -1,0 +1,9 @@
+{
+  "port": "3702",
+  "hostname": "localhost",
+  "host": "database.hostname.com",
+  "user": "user",
+  "password": "password",
+  "database": "schema"
+}
+

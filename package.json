@@ -1,5 +1,5 @@
 {
-	"name": "Authentication_Socket",
+	"name": "NodeJS Sql Navigator",
 	"version": "0.0.0",
 	"description": "NodeJS_Auth_Socket",
 	"dependencies": {
@@ -8,5 +8,5 @@
 		"mathjs": "latest",
 		"mysql": "latest"
 	},
-	"author": "Jon West ddproxy@gmail.com, Grant Gandy clsscmstng@gmail.com"
+	"author": "Jon West <jon.c.west@outlook.com>"
 }

@@ -1,185 +1,236 @@
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    </head>
+</head>
 
 <body>
-    <div id='container'>
-        <table class='data'>
-            <thead class='dataHead'></thead>
-            <tbody class='dataBody'></tbody>
-        </table>
-    </div>
-    
-    
-    <!-- Jquery CDNs -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
-    <!-- Custom js -->
-    <script type="text/javascript" src="./jquery.big-slide.js"></script>
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<div id='container'>
+    <table class='data'>
+        <thead class='dataHead'></thead>
+        <tbody class='dataBody'></tbody>
+    </table>
+</div>
 
-    <!-- DataTables TableTools -->
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/css/TableTools.css">
-    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/js/TableTools.min.js"></script>
-    
-    <!-- CodeMirror -->
 
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/codemirror.css">
-    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/codemirror.js"></script>
-    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/mode/sql/sql.js"></script>
-    
-    <!-- Modify for port number and hostname -->
-    <script type="text/javascript" src="./config.js"></script><style type="text/css"></style>
-    <script type="text/javascript" src="./socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="./client.js"></script>
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.4/themes/dot-luv/jquery-ui.css">
-    
-    <style style="text/css">
-       html, body, div, span, applet, object, iframe,
-        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-        a, abbr, acronym, address, big, cite, code,
-        del, dfn, em, img, ins, kbd, q, s, samp,
-        small, strike, strong, sub, sup, tt, var,
-        b, u, i, center,
-        dl, dt, dd, ol, ul, li,
-        fieldset, form, label, legend,
-        table, caption, tbody, tfoot, thead, tr, th, td,
-        article, aside, canvas, details, embed, 
-        figure, figcaption, footer, header, hgroup, 
-        menu, nav, output, ruby, section, summary,
-        time, mark, audio, video {
-            margin: 0;
-            padding: 0;
-            border: 0;
-            font-size: 100%;
-            font: inherit;
-            vertical-align: baseline;
-            z-index: 1;
-        }
-        h4 {
-            font-size: 120%;
-            font-style: bold;
-            margin-top: 7px;
-        }
-        /* HTML5 display-role reset for older browsers */
-        article, aside, details, figcaption, figure, 
-        footer, header, hgroup, menu, nav, section {
-            display: block;
-        }
+<!-- Jquery CDNs -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<!-- Custom js -->
+<script type="text/javascript" src="./jquery.big-slide.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css"
+      href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8"
+        src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+
+<!-- DataTables TableTools -->
+<link rel="stylesheet" type="text/css"
+      href="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/css/TableTools.css">
+<script type="text/javascript" charset="utf8"
+        src="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/js/TableTools.min.js"></script>
+
+<!-- CodeMirror -->
+
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/codemirror.css">
+<script type="text/javascript" charset="utf8"
+        src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/codemirror.js"></script>
+<script type="text/javascript" charset="utf8"
+        src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/mode/sql/sql.js"></script>
+
+<!-- Modify for port number and hostname -->
+<script type="text/javascript" src="./config.js"></script>
+<style type="text/css"></style>
+<script type="text/javascript" src="./socket.io/socket.io.js"></script>
+<script type="text/javascript" src="./client.js"></script>
+
+<!-- Stylesheets -->
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.4/themes/dot-luv/jquery-ui.css">
+
+<style style="text/css">
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+        z-index: 1;
+    }
+
+    h4 {
+        font-size: 120%;
+        font-style: bold;
+        margin-top: 7px;
+    }
+
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure,
+    footer, header, hgroup, menu, nav, section {
+        display: block;
+    }
+
+    body {
+        line-height: 1;
+    }
+
+    ol, ul {
+        list-style: none;
+    }
+
+    blockquote, q {
+        quotes: none;
+    }
+
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+        content: '';
+        content: none;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    body {
+        background: rgb(224, 224, 224);
+        padding: 0;
+        margin: 0;
+    }
+
+    #chat-content {
+        height: 50%;
+        overflow: auto;
+    }
+
+    #container {
+        width: 80%;
+        height: 80%;
+        overflow: auto;
+        display: block;
+        margin: auto;
+    }
+
+    #string {
+        width: 80%;
+        margin: auto;
+        display: block;
+    }
+
+    #button {
+        width: 80%;
+        margin: auto;
+        display: block;
+    }
+
+    #query {
+        width: 79%;
+        margin: auto;
+        display: inline-block;
+    }
+
+    #panel {
+        width: 20%;
+        margin: auto;
+        display: inline-block;
+    }
+
+    .codemirror {
+        height: 50px;
+        width: 80%;
+        margin: auto;
+    }
+
+    @media screen and (max-device-width: 480px) {
         body {
-            line-height: 1;
+            width: 100%;
         }
-        ol, ul {
-            list-style: none;
-        }
-        blockquote, q {
-            quotes: none;
-        }
-        blockquote:before, blockquote:after,
-        q:before, q:after {
-            content: '';
-            content: none;
-        }
-        table {
-            border-collapse: collapse;
-            border-spacing: 0;
-        } 
-        body {
-            background: rgb(224,224,224);
-            padding: 0;
-            margin: 0;
-        }
-        #chat-content {
-            height: 50%;
-            overflow: auto;
-        }
+
         #container {
-            width: 80%;
+            width: 100%;
             height: 80%;
-            overflow: auto;
-            display: block;
-            margin: auto;
         }
+
         #string {
-            width: 80%;
-            margin: auto;
-            display: block;
+            width: 100%;
+            height: 20%;
         }
-        #button {
-            width: 80%;
-            margin: auto;
-            display: block;
-        }
+
         #query {
-            width: 79%;
+            width: 80%;
             margin: auto;
-            display: inline-block;
+            display: block;
         }
+
         #panel {
             width: 20%;
             margin: auto;
             display: inline-block;
         }
+
         .codemirror {
-            height: 50px;
-            width: 80%;
-            margin: auto;
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
-        @media screen and (max-device-width: 480px) {
-            body {
-                width: 100%;
-            }
-            #container {
-                width: 100%;
-                height: 80%;
-            }
-            #string {
-                width: 100%;
-                height: 20%;
-            }
-            #query {
-                width: 80%;
-                margin: auto;
-                display: block;
-            }
-            #panel {
-                width: 20%;
-                margin: auto;
-                display: inline-block;
-            }
-            .codemirror {
-                width: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            .ui-dialog {
-                width: 100%;
-                margin: 0;
-            }
+
+        .ui-dialog {
+            width: 100%;
+            margin: 0;
         }
-        .panel {
-            position: fixed;
-            right: -15.625em; /*right or left and the width of your navigation panel*/
-            width: 15.625em; /*should match the above value*/
-        }
-        #side-panel {
-            z-index: 2;
-        }
-        #tabs {
-            margin: auto;
-        }
-        #tabs .tabs-spacer { float: left; height: 200px; }
-        .tabs-bottom .ui-tabs-nav { clear: left; padding: 0 .2em .2em .2em; }
-        .tabs-bottom .ui-tabs-nav li { top: auto; bottom: 0; margin: 0 .2em 1px 0; border-bottom: auto; border-top: 0; }
-        .tabs-bottom .ui-tabs-nav li.ui-tabs-active { margin-top: -1px; padding-top: 1px; }
-    </style>
+    }
+
+    .panel {
+        position: fixed;
+        right: -15.625em; /*right or left and the width of your navigation panel*/
+        width: 15.625em; /*should match the above value*/
+    }
+
+    #side-panel {
+        z-index: 2;
+    }
+
+    #tabs {
+        margin: auto;
+    }
+
+    #tabs .tabs-spacer {
+        float: left;
+        height: 200px;
+    }
+
+    .tabs-bottom .ui-tabs-nav {
+        clear: left;
+        padding: 0 .2em .2em .2em;
+    }
+
+    .tabs-bottom .ui-tabs-nav li {
+        top: auto;
+        bottom: 0;
+        margin: 0 .2em 1px 0;
+        border-bottom: auto;
+        border-top: 0;
+    }
+
+    .tabs-bottom .ui-tabs-nav li.ui-tabs-active {
+        margin-top: -1px;
+        padding-top: 1px;
+    }
+</style>
 
 </body>
 </html>

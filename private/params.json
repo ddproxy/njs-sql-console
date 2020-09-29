@@ -1,5 +1,5 @@
 {
-   "bad": [
+   "blocklist": [
     "delete",
     "update",
     "replace",
@@ -8,7 +8,7 @@
     "create",
     "grant"
         ],
-    "noLimit": [
+    "allowlist": [
     "explain",
     "show",
     "insert",

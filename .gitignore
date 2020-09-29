@@ -17,3 +17,4 @@ node_modules
 public/config.js
 private/config.json
 
+.idea

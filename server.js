@@ -10,26 +10,15 @@
 ********************************/
 
 /*******************************
-*
-* Requirements
-*
-********************************/
+ *
+ * Requirements
+ *
+ ********************************/
+const fs = require("fs");
 
-// Require FS module to check for configuration files
-var fs = require( "fs" );
-
-// Require Math
-var MATH = require('mathjs');
-
-// Require crypto
-// var crypto = require('crypto');
-
-// Require Mysql Module
-var mysql = require("mysql");
-
-var express = require( "express" );
-
-// Check configuration files here
+const MATH = require('mathjs');
+const mysql = require("mysql");
+const express = require("express");
 
 fs.exists( "public/config.js", function( exists ) {
 	if ( exists ) {
@@ -68,16 +57,14 @@ var params = require( "./private/params.json" );
 * MySQL connection
 *
 *******************/
-// /Insert custom mysql connection information here
-var dbConfig = {
+const dbConfig = {
     host: config.host,
     user: config.user,
     password: config.password,
     database: config.database
 }
 
-
-var db;
+let db;
 function handleDisconnect() {
     db = mysql.createConnection(dbConfig);
 
